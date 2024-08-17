@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom'
 import LeftSidebar from './LeftSidebar'
 
 function MainLayout() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   return (
     <div className='flex'>

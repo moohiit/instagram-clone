@@ -1,5 +1,5 @@
-import { Camera, Heart, Home, LogOut, Menu, MessageCircle, PlusSquare, Search, TrendingUp, X } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
+import { Camera, Heart, Home, LogOut, Menu, MessageCircle, PlusSquare, Search, TrendingUp, X } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { toast } from 'sonner';
 import axios from 'axios';
@@ -20,10 +20,22 @@ function LeftSidebar({ collapsed, setCollapsed }) {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    // Collapsed by default on small screens (mobile)
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setCollapsed(true);
+      }
+    };
+    handleResize(); // Set initial state
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [setCollapsed]);
+
   // Logout handler
   const logoutHandler = async () => {
     try {
-      const response = await axios.get('/api/v1/user/logout', { withCredentials: true })
+      const response = await axios.get('/api/v1/user/logout', { withCredentials: true });
       if (response.data.success) {
         dispatch(setAuthUser(null));
         dispatch(setPosts([]));
@@ -35,11 +47,11 @@ function LeftSidebar({ collapsed, setCollapsed }) {
         navigate('/login');
       }
     } catch (error) {
-      toast.error(error.response.data.message)
+      toast.error(error.response.data.message);
     }
-  }
+  };
 
-  // Sidebar items 
+  // Sidebar items
   const sidebarItems = [
     { icon: <Home />, text: "Home" },
     { icon: <Search />, text: "Search" },
@@ -61,34 +73,33 @@ function LeftSidebar({ collapsed, setCollapsed }) {
   // Sidebar handler
   const sidebarHandler = (textType) => {
     if (textType === "Home") {
-      navigate('/')
+      navigate('/');
     } else if (textType === "Search") {
-      navigate('/search')
+      navigate('/search');
     } else if (textType === "Explore") {
-      navigate('/explore')
+      navigate('/explore');
     } else if (textType === "Create") {
-      // navigate('/')
       setOpen(true);
     } else if (textType === "Profile") {
-      navigate(`/profile/${user._id}`)
+      navigate(`/profile/${user._id}`);
     } else if (textType === "Messages") {
-      navigate('/messages')
+      navigate('/messages');
     } else if (textType === "Notifications") {
-      navigate('/notifications')
+      navigate('/notifications');
     } else if (textType === "Logout") {
-      logoutHandler()
+      logoutHandler();
     }
-  }
+  };
 
   // Toggle sidebar collapse
   const toggleCollapse = () => {
     setCollapsed(!collapsed);
-  }
+  };
 
   return (
-    <div className={`fixed top-0 left-0 h-screen border-gray-300  z-10 shadow-sm transition-all bg-white ${collapsed ? 'w-9' : 'w-64 border-r-2'} `}>
+    <div className={`fixed top-0 left-0 h-full border-gray-300 z-10 shadow-sm transition-all bg-white ${collapsed ? 'w-9' : 'w-64 border-r-2'} `}>
       <button
-        className={`absolute top-4 left-1 px-2 py-1 text-2xl font-bold text-gray-600 ${collapsed ? "" : "text-red-500"}`}
+        className={`absolute top-4 px-2 py-1 text-2xl font-bold text-center text-gray-600 ${collapsed ? "" : "text-red-500"}`}
         onClick={toggleCollapse}
       >
         {collapsed ? <Menu /> : <X className='text-red-600' />}
@@ -111,13 +122,12 @@ function LeftSidebar({ collapsed, setCollapsed }) {
                 item.text === "Notifications" && liveNotification.length > 0 && (
                   <Popover onOpenChange={(open) => {
                     if (!open) {
-                      // Dispatch action to reset liveNotification when the popover is closed
                       dispatch(setLiveNotification([]));
                     }
                   }}>
                     <PopoverTrigger asChild>
                       <div>
-                        <Button size="icon" className='rounded-full w-5 h-5 absolute bg-red-600 hover:bg-red-600 bottom-6 left-6'>{ liveNotification.length}</Button>
+                        <Button size="icon" className='rounded-full w-5 h-5 absolute bg-red-600 hover:bg-red-600 bottom-6 left-6'>{liveNotification.length}</Button>
                       </div>
                     </PopoverTrigger>
                     <PopoverContent >
@@ -126,17 +136,17 @@ function LeftSidebar({ collapsed, setCollapsed }) {
                           liveNotification.length === 0 ? (
                             <p>No new notification</p>
                           ) : (
-                              liveNotification.map((notification) => {
-                                return (
-                                  <div key={notification.userId} className='flex gap-2 items-center my-1'>
-                                    <Avatar>
-                                      <AvatarImage src={notification.userDetails?.profilePicture} />
-                                      <AvatarFallback>MP</AvatarFallback>
-                                    </Avatar>
-                                    <p className='text-sm'><span className='font-bold mr-1'>{notification.userDetails?.username}</span>liked your post</p>
-                                  </div>
-                                )
-                              })
+                            liveNotification.map((notification) => {
+                              return (
+                                <div key={notification.userId} className='flex gap-2 items-center my-1'>
+                                  <Avatar>
+                                    <AvatarImage src={notification.userDetails?.profilePicture} />
+                                    <AvatarFallback>MP</AvatarFallback>
+                                  </Avatar>
+                                  <p className='text-sm'><span className='font-bold mr-1'>{notification.userDetails?.username}</span>liked your post</p>
+                                </div>
+                              )
+                            })
                           )
                         }
                       </div>
@@ -148,10 +158,9 @@ function LeftSidebar({ collapsed, setCollapsed }) {
           ))}
         </div>
       </div>
-      {/* Create post Dialog */}
       <CreatePost open={open} setOpen={setOpen} />
     </div>
-  )
+  );
 }
 
 export default LeftSidebar;

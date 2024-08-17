@@ -6,7 +6,6 @@ import MainLayout from './components/MainLayout';
 import Profile from './components/Profile';
 import Explore from './components/Explore';
 import Search from './components/Search';
-import Messages from './components/Messages';
 import Notifications from './components/Notifications';
 import EditProfile from './components/EditProfile';
 import Chat from './components/Chat';
@@ -87,7 +86,7 @@ function App() {
   
   useEffect(() => {
     if (user) {
-      const socketio = io('https://sastagram-io-app.onrender.com', {
+      const socketio = io("https://sastagram-io-app.onrender.com", {
         query: {
           userId: user?._id,
         },

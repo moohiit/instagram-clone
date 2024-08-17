@@ -59,11 +59,11 @@ const Login = () => {
     <div className='flex items-center w-screen h-screen justify-center'>
       <form autoComplete='off' onSubmit={loginHandler} className='flex flex-col shadow-lg gap-5 p-8 '>
         <div className='mt-4'>
-                  <h1 className='font-bold text-3xl my-8 pl-5 text-red-500 flex items-center gap-2'>
-          <Camera color="red" size={48} />
-          Sastagram
-        </h1>
-          <p className='text-sm text-center'>Login to see photos and videos from your friends</p>
+          <h1 className='font-bold text-3xl my-8 pl-5 text-red-500 flex items-center justify-center gap-2'>
+            <Camera color="red" size={48} />
+            Sastagram
+          </h1>
+          <p className='text-sm font-semibold text-center'>Login to see photos and videos from your friends</p>
         </div>
         <div>
           <Label className='py-2 font-medium'>Email</Label>
@@ -91,7 +91,7 @@ const Login = () => {
             Loading...
           </Button>) : (<Button type="submit" >Login</Button>)
         }
-        
+
         <span className='text-center'>Don't have an account? <Link to='/signup' className='text-blue-500'>Signup</Link>
         </span>
       </form>

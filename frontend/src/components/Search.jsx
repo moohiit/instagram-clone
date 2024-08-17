@@ -59,7 +59,7 @@ function Search() {
     <div className='flex flex-col w-[95%] bg-slate-50 min-h-max min-w-max border shadow-md items-center '>
       <h1 className='font-bold text-3xl text-gray-600 m-8 '>Search bar</h1>
       <div className='flex gap-4 m-8 mt-3 lg:w-full justify-center'>
-        <Input onChange={(e) => setUsername(e.target.value.trim())} value={username} className=' focus-visible:ring-transparent flex-grow gap-2  rounded-lg p-6 border border-gray-300 max-w-screen-sm' placeholder='search username' />
+        <Input onChange={(e) => setUsername(e.target.value)} value={username} className=' focus-visible:ring-transparent flex-grow gap-2  rounded-lg p-6 border border-gray-300 max-w-screen-sm' placeholder='search username' />
         {
           username && <Button onClick={searchHandler} className='p-6'>Search</Button>
         }

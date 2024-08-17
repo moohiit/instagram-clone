@@ -4,13 +4,15 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { setSelectedUser } from '@/redux/authSlice';
 import Messages from './Messages';
 import { Button } from './ui/button';
-import { MessageCircleCode } from 'lucide-react';
+import { MessageCircleCode, MoreHorizontalIcon } from 'lucide-react';
 import { Input } from './ui/input';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { setMessages } from '@/redux/chatSlice';
 import { Link, useParams } from 'react-router-dom';
 import useGetUserProfile from '@/hooks/useGetUserProfile';
+import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
+import { DialogTrigger } from '@radix-ui/react-dialog';
 
 // Memoized suggested user item to prevent unnecessary re-renders
 const SuggestedUserItem = React.memo(({ suggestedUser, isOnline, onClick }) => (
@@ -35,6 +37,7 @@ function Chat() {
   const { onlineUsers, messages } = useSelector(store => store.chat);
 
   const [message, setMessage] = useState('');
+  const [open, setOpen] = useState(false);
 
   // Fetch user profile if ID is present in the params
   const userId = params?.id;
@@ -76,6 +79,7 @@ function Chat() {
   // Handle user selection
   const handleUserSelect = useCallback((usr) => {
     dispatch(setSelectedUser(usr));
+    setOpen(false);
   }, [dispatch]);
 
   // Memoize the followings with their online status
@@ -87,54 +91,43 @@ function Chat() {
   }, [followings, onlineUsers]);
 
   return (
-    <div className='flex border border-gray-300 h-screen'>
-      <section className='md:w-1/4 my-8'>
-        <h1 className='font-bold px-3 mb-2 text-xl text-gray-400'>Your Profile</h1>
-        <Link to={`/profile/${user?._id}`}>
-          <div className='flex gap-3 items-center p-3 mb-2'>
-            <Avatar className='w-8 h-8'>
-              <AvatarImage src={user?.profilePicture} />
-              <AvatarFallback>MP</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className='font-semibold text-sm'>{user?.username}</h1>
-              <h3 className='text-gray-600 text-sm'>{user?.bio || 'Bio Here...'}</h3>
-            </div>
-          </div>
-        </Link>
-        <hr className='mb-4 border-gray-300' />
-        <div className='overflow-y-auto h-[80vh]'>
-          {memoizedFollowings?.map((followingUser) => (
-            <SuggestedUserItem
-              key={followingUser?._id}
-              suggestedUser={followingUser}
-              isOnline={followingUser.isOnline}
-              onClick={() => handleUserSelect(followingUser)}
-            />
-          ))}
-        </div>
-      </section>
+    <div className='flex flex-col border border-gray-300 h-screen'>
+      <div className='w-full bg-gray-300 flex px-4 justify-between'>
+        <span onClick={() => setOpen(true)} className='font-bold text-gray-500 p-2 cursor-pointer'>Freinds List</span>
+        <Dialog open={open} >
+          <DialogTrigger onClick={()=>setOpen(true)} >
+            <MoreHorizontalIcon />
+          </DialogTrigger>
+          <DialogContent onInteractOutside={() => setOpen(false)}>
+            <DialogTitle className='font-bold px-3 text-xl text-gray-400'>Friends</DialogTitle>
+            <section className='w-full'>
+              <hr className='mb-4 border-gray-300' />
+              <div className='overflow-y-auto h-max'>
+                {memoizedFollowings?.map((followingUser) => (
+                  <SuggestedUserItem
+                    key={followingUser?._id}
+                    suggestedUser={followingUser}
+                    isOnline={followingUser.isOnline}
+                    onClick={() => handleUserSelect(followingUser)}
+                  />
+                ))}
+              </div>
+            </section>
+          </DialogContent>
+        </Dialog>
+      </div>
       {selectedUser ? (
         <section className='flex-1 border-l border-l-gray-300 flex flex-col h-full'>
-          <div className='flex gap-3 items-center px-3 py-2 border-b border-b-gray-300 sticky top-0 bg-white'>
-            <Avatar>
-              <AvatarImage src={selectedUser?.profilePicture} />
-              <AvatarFallback>MP</AvatarFallback>
-            </Avatar>
-            <div className='flex flex-col'>
-              <span>{selectedUser?.username}</span>
-            </div>
-          </div>
           <Messages selectedUser={selectedUser} />
           <div className='flex items-center p-4 border-t border-t-gray-300'>
             <Input
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => setMessage(e.target.value.trim())}
               type='text'
               className='flex-1 mr-2 focus-visible:ring-transparent'
               placeholder='Message...'
             />
-            <Button onClick={() => sendMessageHandler(selectedUser._id)}>Send</Button>
+            {message && <Button onClick={() => sendMessageHandler(selectedUser._id)}>Send</Button> }
           </div>
         </section>
       ) : (
