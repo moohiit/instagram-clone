@@ -30,34 +30,36 @@ const SuggestedUserItem = React.memo(({ suggestedUser, isOnline, onClick }) => (
 
 function Chat() {
   const params = useParams();
-  const { userProfile } = useSelector(store => store.auth);
+  const dispatch = useDispatch();
+  const { user, followings, selectedUser, userProfile } = useSelector(store => store.auth);
+  const { onlineUsers, messages } = useSelector(store => store.chat);
 
+  const [message, setMessage] = useState('');
+
+  // Fetch user profile if ID is present in the params
   const userId = params?.id;
   if (userId) {
     useGetUserProfile(userId);
   }
+  console.log("Following:")
+  console.log(followings);
+  // Set selected user profile when user ID changes
   useEffect(() => {
     if (userId) {
       dispatch(setSelectedUser(userProfile));
     }
-  },[userId])
-  const dispatch = useDispatch();
-  const { user, suggestedUsers, selectedUser } = useSelector(store => store.auth);
-  const { onlineUsers, messages } = useSelector(store => store.chat);
+  }, [dispatch, userId, userProfile]);
 
-  const [message, setMessage] = useState("");
-
-  // Function to send a message
+  // Send message function
   const sendMessageHandler = useCallback(async (recieverId) => {
     try {
       const response = await axios.post(`/api/v1/message/send/${recieverId}`, { message }, {
-        headers: { "Content-Type": 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
       if (response.data.success) {
         const newMessages = messages ? [...messages, response.data.newMessage] : [response.data.newMessage];
         dispatch(setMessages(newMessages));
-        // toast.success(response.data.message);
         setMessage('');
       }
     } catch (error) {
@@ -66,22 +68,23 @@ function Chat() {
     }
   }, [dispatch, message, messages]);
 
-  // Clean up function when a user leaves the chat section
+  // Clean up when leaving the chat section
   useEffect(() => {
     return () => dispatch(setSelectedUser(null));
   }, [dispatch]);
 
-  const handleUserSelect = useCallback((user) => {
-    dispatch(setSelectedUser(user));
+  // Handle user selection
+  const handleUserSelect = useCallback((usr) => {
+    dispatch(setSelectedUser(usr));
   }, [dispatch]);
 
-  // Memoized online status for suggested users
-  const memoizedSuggestedUsers = useMemo(() => {
-    return suggestedUsers.map(suggestedUser => ({
-      ...suggestedUser,
-      isOnline: onlineUsers?.includes(suggestedUser?._id),
+  // Memoize the followings with their online status
+  const memoizedFollowings = useMemo(() => {
+    return followings?.map((followingUser) => ({
+      ...followingUser,
+      isOnline: onlineUsers?.includes(followingUser?._id),
     }));
-  }, [suggestedUsers, onlineUsers]);
+  }, [followings, onlineUsers]);
 
   return (
     <div className='flex border border-gray-300 h-screen'>
@@ -101,12 +104,12 @@ function Chat() {
         </Link>
         <hr className='mb-4 border-gray-300' />
         <div className='overflow-y-auto h-[80vh]'>
-          {memoizedSuggestedUsers.map(suggestedUser => (
+          {memoizedFollowings?.map((followingUser) => (
             <SuggestedUserItem
-              key={suggestedUser?._id}
-              suggestedUser={suggestedUser}
-              isOnline={suggestedUser.isOnline}
-              onClick={() => handleUserSelect(suggestedUser)}
+              key={followingUser?._id}
+              suggestedUser={followingUser}
+              isOnline={followingUser.isOnline}
+              onClick={() => handleUserSelect(followingUser)}
             />
           ))}
         </div>
@@ -126,8 +129,8 @@ function Chat() {
           <div className='flex items-center p-4 border-t border-t-gray-300'>
             <Input
               value={message}
-              onChange={e => setMessage(e.target.value)}
-              type="text"
+              onChange={(e) => setMessage(e.target.value)}
+              type='text'
               className='flex-1 mr-2 focus-visible:ring-transparent'
               placeholder='Message...'
             />

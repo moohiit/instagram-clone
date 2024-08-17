@@ -23,7 +23,9 @@ const useGetAllMessage = () => {
         toast.error(error.response.data.message);
       }
     }
-    fetchAllMessage();
+    if (selectedUser?._id) {
+      fetchAllMessage();
+    }
   }, [selectedUser])
 }
 

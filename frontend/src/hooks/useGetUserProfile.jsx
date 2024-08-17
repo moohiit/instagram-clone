@@ -17,6 +17,7 @@ const useGetUserProfile = (userId) => {
         }
       } catch (error) {
         console.log(error);
+        console.log("Error in fetching user profile");
       }
     }
     fetchUserProfile();

@@ -9,6 +9,7 @@ import axios from 'axios'
 import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
 import { setPosts } from '@/redux/postSlice'
+import { useNavigate } from 'react-router-dom'
 
 function CreatePost({ open, setOpen }) {
   const inputref = useRef();
@@ -19,6 +20,7 @@ function CreatePost({ open, setOpen }) {
   const { user } = useSelector(store => store.auth);
   const {posts} = useSelector(store => store.post);
   const dispatch = useDispatch();
+  const navigate =useNavigate()
   //File handler function
   const fileHandler = async (e) => {
     const file = e.target.files?.[0];
@@ -45,12 +47,13 @@ function CreatePost({ open, setOpen }) {
       });
       if (response.data.success) {
         dispatch(setPosts([response.data.post, ...posts]));
-        console.log(response.data.success);
+        // console.log(response.data.success);
         toast.success(response.data.message);
         setFile("");
         setCaption("");
         setImagePreview("")
         setOpen(false);
+        navigate('/');
       }
     } catch (error) {
       console.log(error);
