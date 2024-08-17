@@ -385,7 +385,7 @@ export const getFollowing = async (req, res) => {
         message: "User not found",
       });
     }
-    console.log("Following fetched successfully:", user.following);
+    // console.log("Following fetched successfully:", user.following);
     // Send the followers and following data as response
     return res.status(200).json({
       success: true,
