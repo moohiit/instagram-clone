@@ -11,7 +11,7 @@ import path from 'path'
 
 //Configure environment Variables
 configDotenv({});
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT;
 const __dirname = path.resolve();
 //Middlewares
 app.use(express.json());
