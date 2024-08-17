@@ -92,7 +92,7 @@ function Chat() {
 
   return (
     <div className='flex flex-col border border-gray-300 h-screen'>
-      <div className='w-full bg-gray-300 flex px-4 justify-between'>
+      <div className='w-full bg-blue-300 flex px-4 justify-between'>
         <span onClick={() => setOpen(true)} className='font-bold text-gray-500 p-2 cursor-pointer'>Freinds List</span>
         <Dialog open={open} >
           <DialogTrigger onClick={()=>setOpen(true)} >
