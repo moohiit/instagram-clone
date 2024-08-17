@@ -1,11 +1,11 @@
 import { Label } from '@radix-ui/react-label'
 import React, { useEffect, useState } from 'react'
 import { Input } from './ui/input'
-import { Button, Camera} from './ui/button'
+import { Button } from './ui/button'
 import axios from 'axios'
 import { toast } from 'sonner'
 import { Link, useNavigate } from 'react-router-dom'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Camera} from 'lucide-react'
 import { useSelector } from 'react-redux'
 
 
