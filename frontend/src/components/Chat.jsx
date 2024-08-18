@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { setSelectedUser } from '@/redux/authSlice';
@@ -14,21 +14,6 @@ import useGetUserProfile from '@/hooks/useGetUserProfile';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 
-const SuggestedUserItem = React.memo(({ suggestedUser, isOnline, onClick }) => (
-  <div onClick={onClick} className='flex gap-3 items-center p-3 hover:bg-gray-100 cursor-pointer'>
-    <Avatar className='w-14 h-14'>
-      <AvatarImage src={suggestedUser?.profilePicture} />
-      <AvatarFallback>MP</AvatarFallback>
-    </Avatar>
-    <div className='flex flex-col'>
-      <span className='font-medium'>{suggestedUser?.username}</span>
-      <span className={`text-xs font-bold ${isOnline ? 'text-green-600' : 'text-red-600'}`}>
-        {isOnline ? 'Online' : 'Offline'}
-      </span>
-    </div>
-  </div>
-));
-
 function Chat() {
   const params = useParams();
   const dispatch = useDispatch();
@@ -37,6 +22,8 @@ function Chat() {
 
   const [message, setMessage] = useState('');
   const [open, setOpen] = useState(false);
+  
+  const inputRef = useRef(null);  // Ref for the input field
 
   const userId = params?.id;
   if (userId) {
@@ -59,6 +46,10 @@ function Chat() {
         const newMessages = messages ? [...messages, response.data.newMessage] : [response.data.newMessage];
         dispatch(setMessages(newMessages));
         setMessage('');
+        // Refocus the input to keep the keyboard open on mobile
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
       }
     } catch (error) {
       console.error(error);
@@ -85,6 +76,7 @@ function Chat() {
   // Function to handle Enter key press
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && message.trim()) {
+      e.preventDefault();  // Prevent default behavior on Enter key press
       sendMessageHandler(selectedUser._id);
     }
   };
@@ -122,12 +114,22 @@ function Chat() {
             <Input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyDown} // Attach keydown event to input
+              onKeyDown={handleKeyDown}  // Attach keydown event to input
+              ref={inputRef}  // Attach the ref to the input
               type='text'
               className='flex-1 mr-2 focus-visible:ring-transparent'
               placeholder='Message...'
             />
-            {message && <Button onClick={() => sendMessageHandler(selectedUser._id)}>Send</Button>}
+            {message && (
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();  // Prevent default button behavior
+                  sendMessageHandler(selectedUser._id);
+                }}
+              >
+                Send
+              </Button>
+            )}
           </div>
         </section>
       ) : (
