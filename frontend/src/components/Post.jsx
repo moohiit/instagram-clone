@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 import axios from 'axios'
 import { setPosts } from '@/redux/postSlice'
 import { setAuthUser } from '@/redux/authSlice'
+import { Link } from 'react-router-dom'
 function Post({ post }) {
   const { user } = useSelector(store => store.auth);
   const { posts } = useSelector(store => store.post);

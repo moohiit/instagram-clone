@@ -285,6 +285,24 @@ export const addComment = async (req, res) => {
     post.comments.push(comment._id);
     await post.save();
 
+    //Socket.io logic goes here for realtime effect
+    const user = await User.findById(commenterId).select(
+      "username profilePicture"
+    );
+    const postOwnerId = post.author.toString();
+    if (postOwnerId !== commenterId) {
+      message= `${user.username} comment`
+      //emit a notification
+      const notification = {
+        type: "comment",
+        userId: commenterId,
+        userDetails: user,
+        postId,
+        message: message,
+      };
+      const postOwnerSocketId = getRecieverSocketId(postOwnerId);
+      io.to(postOwnerSocketId).emit("notification", notification);
+    }
     return res.status(201).json({
       message: "Comment added successfully",
       success: true,
