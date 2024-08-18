@@ -16,12 +16,12 @@ import { DialogTrigger } from '@radix-ui/react-dialog';
 
 const SuggestedUserItem = React.memo(({ suggestedUser, isOnline, onClick }) => (
   <div onClick={onClick} className='flex gap-3 items-center p-3 hover:bg-gray-100 cursor-pointer'>
-    <Avatar className='w-12 h-12'>
+    <Avatar className='w-14 h-14'>
       <AvatarImage src={suggestedUser?.profilePicture} />
       <AvatarFallback>MP</AvatarFallback>
     </Avatar>
     <div className='flex flex-col'>
-      <span className='font-medium text-sm'>{suggestedUser?.username}</span>
+      <span className='font-medium'>{suggestedUser?.username}</span>
       <span className={`text-xs font-bold ${isOnline ? 'text-green-600' : 'text-red-600'}`}>
         {isOnline ? 'Online' : 'Offline'}
       </span>
@@ -82,12 +82,17 @@ function Chat() {
     }));
   }, [followings, onlineUsers]);
 
+  // Function to handle Enter key press
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && message.trim()) {
+      sendMessageHandler(selectedUser._id);
+    }
+  };
+
   return (
-    <div className='flex flex-col h-screen'>
-      <div className='w-full bg-blue-300 flex px-4 justify-between items-center'>
-        <span onClick={() => setOpen(true)} className='font-bold text-gray-500 p-2 cursor-pointer'>
-          Friends List
-        </span>
+    <div className='flex flex-col border border-gray-300 h-screen'>
+      <div className='w-full bg-blue-300 flex px-4 justify-between'>
+        <span onClick={() => setOpen(true)} className='font-bold text-gray-500 p-2 cursor-pointer'>Friends List</span>
         <Dialog open={open}>
           <DialogTrigger onClick={() => setOpen(true)}>
             <MoreHorizontalIcon />
@@ -96,7 +101,7 @@ function Chat() {
             <DialogTitle className='font-bold px-3 text-xl text-gray-400'>Friends</DialogTitle>
             <section className='w-full'>
               <hr className='mb-4 border-gray-300' />
-              <div className='overflow-y-auto max-h-[400px]'>
+              <div className='overflow-y-auto h-max'>
                 {memoizedFollowings?.map((followingUser) => (
                   <SuggestedUserItem
                     key={followingUser?._id}
@@ -113,22 +118,23 @@ function Chat() {
       {selectedUser ? (
         <section className='flex-1 border-l border-l-gray-300 flex flex-col h-full'>
           <Messages selectedUser={selectedUser} />
-          <div className='flex items-center p-2 border-t border-t-gray-300'>
+          <div className='flex items-center p-4 border-t border-t-gray-300'>
             <Input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown} // Attach keydown event to input
               type='text'
               className='flex-1 mr-2 focus-visible:ring-transparent'
               placeholder='Message...'
             />
-            <Button onClick={() => sendMessageHandler(selectedUser._id)}>Send</Button>
+            {message && <Button onClick={() => sendMessageHandler(selectedUser._id)}>Send</Button>}
           </div>
         </section>
       ) : (
-          <div className='flex-1 border-l border-l-gray-300 flex flex-col h-full justify-center items-center'>
-          <MessageCircleCode className='w-24 h-24 my-4' />
-          <h1 className='text-xl'>Your Messages</h1>
-          <span className='text-gray-500'>Send a message to start a chat</span>
+        <div className='flex flex-col border-l border-l-gray-300 w-full items-center justify-center mx-auto'>
+          <MessageCircleCode className='w-32 h-32 my-4' />
+          <h1>Your Messages</h1>
+          <span>Send a message to start a chat</span>
         </div>
       )}
     </div>
