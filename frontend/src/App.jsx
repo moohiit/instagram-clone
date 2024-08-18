@@ -82,9 +82,8 @@ const browserRouter = createBrowserRouter([
 function App() {
   const { user } = useSelector(store => store.auth);
   const { socket } = useSelector(store => store.socketio);
-  const { liveNotification } = useSelector(store => store.notification);
   const dispatch = useDispatch();
-
+  //https://sastagram-io-app.onrender.com
   useEffect(() => {
     if (user) {
       const socketio = io("https://sastagram-io-app.onrender.com", {
@@ -105,8 +104,7 @@ function App() {
         dispatch(setOnlineUsers(onlineUsers));
       });
       socketio.on('notification', (notification) => {
-        const newnotifications = [...liveNotification,notification]
-        dispatch(setLiveNotification(newnotifications))
+        dispatch(setLiveNotification(notification))
       })
       return () => {
         socketio.close();

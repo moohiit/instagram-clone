@@ -25,6 +25,9 @@ function Post({ post }) {
   const dispatch = useDispatch();
   const [liked, setLiked] = useState(post.likes.includes(user?._id) || false);
   const [postLikes, setPostlikes] = useState(post.likes.length);
+  useEffect(() => {
+    setPostlikes(post.likes.length)
+  },[post,postLikes])
   const [bookmarked, setBookmarked] = useState(user?.bookmarks.includes(post._id));
   const isFollowing = user?.following.includes(post.author?._id);
   const [loading, setLoading] = useState(false);

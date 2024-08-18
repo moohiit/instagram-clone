@@ -7,7 +7,11 @@ const rtnSlice = createSlice({
   },
   reducers: {
     setLiveNotification: (state, action) => {
-        state.liveNotification=action.payload;
+      if (action.payload === null) {
+        state.liveNotification = [];
+      } else {
+        state.liveNotification = [...state.liveNotification, action.payload];
+      }
     },
   },
 });

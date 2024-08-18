@@ -14,7 +14,7 @@ export default function Notifications() {
           ) : (
             liveNotification?.map((notification) => {
               return (
-                <div key={notification.userId} className='flex gap-2 rounded-lg p-2 bg-slate-100 items-center my-1'>
+                <div key={notification.userId} className='flex gap-2 rounded-lg p-2 bg-slate-100 items-center my-1 w-full'>
                   <Avatar>
                     <AvatarImage src={notification.userDetails?.profilePicture} />
                     <AvatarFallback>MP</AvatarFallback>
@@ -31,7 +31,7 @@ export default function Notifications() {
                       notification?.type === "comment" && <>
                         <span className='font-semibold text-sm' >commented on your post</span>
                         <br />
-                        <span className='text-gray-300'>{notification?.message}</span>
+                        <span className='text-gray-500 font-medium'>{notification?.message}</span>
                       </>
                     }
                   </p>

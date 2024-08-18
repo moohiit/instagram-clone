@@ -122,7 +122,7 @@ function LeftSidebar({ collapsed, setCollapsed }) {
                 item.text === "Notifications" && liveNotification.length > 0 && (
                   <Popover onOpenChange={(open) => {
                     if (!open) {
-                      dispatch(setLiveNotification([]));
+                      dispatch(setLiveNotification(null));
                     }
                   }}>
                     <PopoverTrigger asChild>
@@ -131,14 +131,14 @@ function LeftSidebar({ collapsed, setCollapsed }) {
                       </div>
                     </PopoverTrigger>
                     <PopoverContent >
-                      <div>
+                      <div className=''>
                         {
                           liveNotification.length === 0 ? (
                             <p>No new notification</p>
                           ) : (
                             liveNotification.map((notification) => {
                               return (
-                                <div key={notification.userId} className='flex gap-2 items-center my-1'>
+                                <div key={notification.userId} className='flex gap-2 items-center my-1 w-full'>
                                   <Avatar>
                                     <AvatarImage src={notification.userDetails?.profilePicture} />
                                     <AvatarFallback>MP</AvatarFallback>
@@ -155,7 +155,7 @@ function LeftSidebar({ collapsed, setCollapsed }) {
                                       notification?.type === "comment" && <p>
                                         <span className='font-semibold text-sm' >commented on your post</span>
                                         <br />
-                                        <span className='text-gray-300'>{notification?.message}</span>
+                                        <span className='text-gray-500 font-medium'>{notification?.message}</span>
                                       </p>
                                     }
                                   </p>
