@@ -291,14 +291,13 @@ export const addComment = async (req, res) => {
     );
     const postOwnerId = post.author.toString();
     if (postOwnerId !== commenterId) {
-      message= `${user.username} comment`
       //emit a notification
       const notification = {
         type: "comment",
         userId: commenterId,
         userDetails: user,
         postId,
-        message: message,
+        message: text,
       };
       const postOwnerSocketId = getRecieverSocketId(postOwnerId);
       io.to(postOwnerSocketId).emit("notification", notification);
