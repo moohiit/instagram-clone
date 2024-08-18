@@ -82,6 +82,7 @@ const browserRouter = createBrowserRouter([
 function App() {
   const { user } = useSelector(store => store.auth);
   const { socket } = useSelector(store => store.socketio);
+  const { liveNotification } = useSelector(store => store.notification);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -104,7 +105,8 @@ function App() {
         dispatch(setOnlineUsers(onlineUsers));
       });
       socketio.on('notification', (notification) => {
-        dispatch(setLiveNotification(notification))
+        const newnotifications = [...liveNotification,notification]
+        dispatch(setLiveNotification(newnotifications))
       })
       return () => {
         socketio.close();
