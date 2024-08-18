@@ -293,7 +293,7 @@ export const addComment = async (req, res) => {
     if (postOwnerId !== commenterId) {
       //emit a notification
       const notification = {
-        type: "dislike",
+        type: "comment",
         userId: commenterId,
         userDetails: user,
         postId,

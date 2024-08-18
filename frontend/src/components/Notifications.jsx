@@ -28,11 +28,11 @@ export default function Notifications() {
                       notification?.type === "dislike" && <span className='font-semibold text-sm'>disliked your post</span>
                     }
                     {
-                      notification?.type === "comment" && <p>
+                      notification?.type === "comment" && <>
                         <span className='font-semibold text-sm' >commented on your post</span>
                         <br />
                         <span className='text-gray-300'>{notification?.message}</span>
-                      </p>
+                      </>
                     }
                   </p>
                 </div>
