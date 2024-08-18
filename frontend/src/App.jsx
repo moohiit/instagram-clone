@@ -18,7 +18,6 @@ import { setLiveNotification } from './redux/rtnSlice';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import Followers from './components/Followers';
 import Following from './components/Following';
-
 const browserRouter = createBrowserRouter([
   {
     path: "/",
@@ -78,11 +77,12 @@ const browserRouter = createBrowserRouter([
     path: "/login",
     element: <Login />
   }
-]);
+])
 
 function App() {
   const { user } = useSelector(store => store.auth);
   const { socket } = useSelector(store => store.socketio);
+  const { liveNotification } = useSelector(store => store.notification);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -104,19 +104,15 @@ function App() {
         console.log('Online Users:', onlineUsers);
         dispatch(setOnlineUsers(onlineUsers));
       });
-
       socketio.on('notification', (notification) => {
-        dispatch((prevState) => {
-          const newNotifications = [...prevState.notification.liveNotification, notification];
-          return setLiveNotification(newNotifications);
-        });
-      });
-
+        const newnotifications = [...liveNotification,notification]
+        dispatch(setLiveNotification(newnotifications))
+      })
       return () => {
         socketio.close();
         dispatch(setOnlineUsers(null));
         console.log('Socket closed');
-      };
+      }
     } else if (socket) {
       socket.close();
       dispatch(setOnlineUsers(null));
@@ -128,7 +124,7 @@ function App() {
     <>
       <RouterProvider router={browserRouter} />
     </>
-  );
+  )
 }
 
-export default App;
+export default App
