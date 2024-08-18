@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { setSelectedUser } from '@/redux/authSlice';
@@ -37,6 +37,7 @@ function Chat() {
 
   const [message, setMessage] = useState('');
   const [open, setOpen] = useState(false);
+  const inputRef = useRef(null);  // Ref for the input field
 
   const userId = params?.id;
   if (userId) {
