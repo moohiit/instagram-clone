@@ -14,15 +14,14 @@ import useGetUserProfile from '@/hooks/useGetUserProfile';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 
-// Memoized suggested user item to prevent unnecessary re-renders
 const SuggestedUserItem = React.memo(({ suggestedUser, isOnline, onClick }) => (
   <div onClick={onClick} className='flex gap-3 items-center p-3 hover:bg-gray-100 cursor-pointer'>
-    <Avatar className='w-14 h-14'>
+    <Avatar className='w-12 h-12'>
       <AvatarImage src={suggestedUser?.profilePicture} />
       <AvatarFallback>MP</AvatarFallback>
     </Avatar>
     <div className='flex flex-col'>
-      <span className='font-medium'>{suggestedUser?.username}</span>
+      <span className='font-medium text-sm'>{suggestedUser?.username}</span>
       <span className={`text-xs font-bold ${isOnline ? 'text-green-600' : 'text-red-600'}`}>
         {isOnline ? 'Online' : 'Offline'}
       </span>
@@ -39,21 +38,17 @@ function Chat() {
   const [message, setMessage] = useState('');
   const [open, setOpen] = useState(false);
 
-  // Fetch user profile if ID is present in the params
   const userId = params?.id;
   if (userId) {
     useGetUserProfile(userId);
   }
-  console.log("Following:")
-  console.log(followings);
-  // Set selected user profile when user ID changes
+
   useEffect(() => {
     if (userId) {
       dispatch(setSelectedUser(userProfile));
     }
   }, [dispatch, userId, userProfile]);
 
-  // Send message function
   const sendMessageHandler = useCallback(async (recieverId) => {
     try {
       const response = await axios.post(`/api/v1/message/send/${recieverId}`, { message }, {
@@ -71,18 +66,15 @@ function Chat() {
     }
   }, [dispatch, message, messages]);
 
-  // Clean up when leaving the chat section
   useEffect(() => {
     return () => dispatch(setSelectedUser(null));
   }, [dispatch]);
 
-  // Handle user selection
   const handleUserSelect = useCallback((usr) => {
     dispatch(setSelectedUser(usr));
     setOpen(false);
   }, [dispatch]);
 
-  // Memoize the followings with their online status
   const memoizedFollowings = useMemo(() => {
     return followings?.map((followingUser) => ({
       ...followingUser,
@@ -91,18 +83,20 @@ function Chat() {
   }, [followings, onlineUsers]);
 
   return (
-    <div className='flex flex-col border border-gray-300 h-screen'>
-      <div className='w-full bg-blue-300 flex px-4 justify-between'>
-        <span onClick={() => setOpen(true)} className='font-bold text-gray-500 p-2 cursor-pointer'>Freinds List</span>
-        <Dialog open={open} >
-          <DialogTrigger onClick={()=>setOpen(true)} >
+    <div className='flex flex-col h-screen'>
+      <div className='w-full bg-blue-300 flex px-4 justify-between items-center'>
+        <span onClick={() => setOpen(true)} className='font-bold text-gray-500 p-2 cursor-pointer'>
+          Friends List
+        </span>
+        <Dialog open={open}>
+          <DialogTrigger onClick={() => setOpen(true)}>
             <MoreHorizontalIcon />
           </DialogTrigger>
           <DialogContent onInteractOutside={() => setOpen(false)}>
             <DialogTitle className='font-bold px-3 text-xl text-gray-400'>Friends</DialogTitle>
             <section className='w-full'>
               <hr className='mb-4 border-gray-300' />
-              <div className='overflow-y-auto h-max'>
+              <div className='overflow-y-auto max-h-[400px]'>
                 {memoizedFollowings?.map((followingUser) => (
                   <SuggestedUserItem
                     key={followingUser?._id}
@@ -119,22 +113,22 @@ function Chat() {
       {selectedUser ? (
         <section className='flex-1 border-l border-l-gray-300 flex flex-col h-full'>
           <Messages selectedUser={selectedUser} />
-          <div className='flex items-center p-4 border-t border-t-gray-300'>
+          <div className='flex items-center p-2 border-t border-t-gray-300'>
             <Input
               value={message}
-              onChange={(e) => setMessage(e.target.value.trim())}
+              onChange={(e) => setMessage(e.target.value)}
               type='text'
               className='flex-1 mr-2 focus-visible:ring-transparent'
               placeholder='Message...'
             />
-            {message && <Button onClick={() => sendMessageHandler(selectedUser._id)}>Send</Button> }
+            <Button onClick={() => sendMessageHandler(selectedUser._id)}>Send</Button>
           </div>
         </section>
       ) : (
-        <div className='flex flex-col border-l border-l-gray-300 w-full items-center justify-center mx-auto'>
-          <MessageCircleCode className='w-32 h-32 my-4' />
-          <h1>Your Messages</h1>
-          <span>Send a message to start a chat</span>
+          <div className='flex-1 border-l border-l-gray-300 flex flex-col h-full justify-center items-center'>
+          <MessageCircleCode className='w-24 h-24 my-4' />
+          <h1 className='text-xl'>Your Messages</h1>
+          <span className='text-gray-500'>Send a message to start a chat</span>
         </div>
       )}
     </div>
