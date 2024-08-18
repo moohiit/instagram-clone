@@ -7,15 +7,15 @@ const rtnSlice = createSlice({
   },
   reducers: {
     setLiveNotification: (state, action) => {
-      if (action.payload.type === "like") {
         state.liveNotification.push(action.payload);
-      } else if (action.payload.type === "dislike") {
-        state.liveNotification = state.liveNotification.filter(
-          (items) => items.userId !== action.payload.userId
-        );
-      } else if (action.payload.type === "comment") {
-        state.liveNotification.push(action.payload);
-      }
+      // if (action.payload.type === "like") {
+      // } else if (action.payload.type === "dislike") {
+      //   state.liveNotification = state.liveNotification.filter(
+      //     (items) => items.userId !== action.payload.userId
+      //   );
+      // } else if (action.payload.type === "comment") {
+      //   state.liveNotification.push(action.payload);
+      // }
     },
   },
 });
