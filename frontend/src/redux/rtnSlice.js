@@ -7,13 +7,12 @@ const rtnSlice = createSlice({
   },
   reducers: {
     setLiveNotification: (state, action) => {
-      state.liveNotification.push(action.payload);
-      // if (action.payload.type === 'like') {
-      // } else if (action.payload.type === 'dislike') {
-      //   state.liveNotification = state.liveNotification.filter((items) => items.userId !== action.payload.userId);
-      // } else {
-      //   state.liveNotification = action.payload;
-      // }
+      if (action.payload.type === 'like') {
+      } else if (action.payload.type === 'dislike') {
+        state.liveNotification = state.liveNotification.filter((items) => items.userId !== action.payload.userId);
+      } else {
+        state.liveNotification = action.payload;
+      }
     }
   }
 })
