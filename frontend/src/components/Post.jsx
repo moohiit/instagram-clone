@@ -172,11 +172,15 @@ function Post({ post }) {
     '>
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-2'>
-          <Avatar className='w-6 h-6'>
-            <AvatarImage src={post.author.profilePicture} />
-            <AvatarFallback>MP</AvatarFallback>
-          </Avatar>
-          <h1>{post.author.username}</h1>
+          <Link to={`/profile/${post?.author._id}`}>
+            <Avatar className='w-6 h-6'>
+              <AvatarImage src={post?.author.profilePicture} />
+              <AvatarFallback>MP</AvatarFallback>
+            </Avatar>
+          </Link>
+          <Link to={`/profile/${post?.author._id}`}>
+            <h1>{post.author.username}</h1>
+          </Link>
           {
             user?._id === post?.author._id && <Badge className={"bg-slate-400"} varient="primary">Author</Badge>
           }
@@ -188,7 +192,7 @@ function Post({ post }) {
           <DialogContent className='flex flex-col p-0 gap-0 items-center text-sm'>
             <DialogDescription className='hidden'>This is options section of a post.</DialogDescription>
             <DialogTitle className='hidden text-center pt-2 align-middle justify-center items-center '>Post Options</DialogTitle>
-            <Button onClick={bookamarkHandler} varient='secondary' className={`cursor-pointer bg-slate-100 m-[1px] w-full ${bookmarked ? 'text-[#f83b3b] hover:text-[#f53131]' : 'text-[#3BADF8] hover:text-[#31bdf5]'}  hover:bg-slate-200 `} >{bookmarked?"Remove Bookmark":"Add Bookmark" }</Button>
+            <Button onClick={bookamarkHandler} varient='secondary' className={`cursor-pointer bg-slate-100 m-[1px] w-full ${bookmarked ? 'text-[#f83b3b] hover:text-[#f53131]' : 'text-[#3BADF8] hover:text-[#31bdf5]'}  hover:bg-slate-200 `} >{bookmarked ? "Remove Bookmark" : "Add Bookmark"}</Button>
             {user && user._id !== post.author._id && (
               <Button
                 variant='secondary'
@@ -206,7 +210,7 @@ function Post({ post }) {
                 onClick={deletePostHandler}
                 varient='ghost' className='cursor-pointer bg-slate-100 m-[1px] w-full text-[red]' >Delete</Button>)
             )}
-            
+
           </DialogContent>
         </Dialog>
       </div>
