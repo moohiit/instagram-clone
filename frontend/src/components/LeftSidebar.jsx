@@ -143,7 +143,22 @@ function LeftSidebar({ collapsed, setCollapsed }) {
                                     <AvatarImage src={notification.userDetails?.profilePicture} />
                                     <AvatarFallback>MP</AvatarFallback>
                                   </Avatar>
-                                  <p className='text-sm'><span className='font-bold mr-1'>{notification.userDetails?.username}</span>liked your post</p>
+                                  <p className='text-sm'>
+                                    <span className='font-bold mr-1'>{notification.userDetails?.username}</span>
+                                    {
+                                      notification?.type === "like" && <span className='font-semibold text-sm'>liked your post</span>
+                                    }
+                                    {
+                                      notification?.type === "dislike" && <span className='font-semibold text-sm'>disliked your post</span>
+                                    }
+                                    {
+                                      notification?.type === "comment" && <p>
+                                        <span className='font-semibold text-sm' >commented on your post</span>
+                                        <br />
+                                        <span className='text-gray-300'>{notification?.message}</span>
+                                      </p>
+                                    }
+                                  </p>
                                 </div>
                               )
                             })
