@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from '@/components/Home';
 import Signup from './components/Signup';
-import Login from './components/Login'; 
+import Login from './components/Login';
 import MainLayout from './components/MainLayout';
 import Profile from './components/Profile';
 import Explore from './components/Explore';
@@ -9,7 +9,7 @@ import Search from './components/Search';
 import Notifications from './components/Notifications';
 import EditProfile from './components/EditProfile';
 import Chat from './components/Chat';
-import {io} from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSocket } from './redux/socketSlice';
@@ -25,7 +25,7 @@ const browserRouter = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home/>
+        element: <Home />
       },
       {
         path: "/search",
@@ -33,57 +33,57 @@ const browserRouter = createBrowserRouter([
       },
       {
         path: "/explore",
-        element: <Explore/>
+        element: <Explore />
       },
       {
         path: `/profile/:id`,
-        element: <Profile/>
+        element: <Profile />
       },
       {
         path: "/messages",
-        element: <Chat/>
+        element: <Chat />
       },
       {
         path: "/notifications",
-        element: <Notifications/>
+        element: <Notifications />
       },
       {
         path: "/profile/edit",
-        element: <EditProfile/>
+        element: <EditProfile />
       },
       {
         path: "/chat",
-        element: <Chat/>
+        element: <Chat />
       },
       {
         path: "/chat/:id",
-        element: <Chat/>
+        element: <Chat />
       },
       {
         path: "/:id/followers",
-        element: <Followers/>
+        element: <Followers />
       },
       {
         path: "/:id/following",
-        element: <Following/>
+        element: <Following />
       },
     ]
   },
   {
     path: "/signup",
-    element: <Signup/>
+    element: <Signup />
   },
   {
     path: "/login",
-    element: <Login/>
+    element: <Login />
   }
 ])
 
 function App() {
   const { user } = useSelector(store => store.auth);
-  const { socket } = useSelector(store => store.socketio); 
+  const { socket } = useSelector(store => store.socketio);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     if (user) {
       const socketio = io("https://sastagram-io-app.onrender.com", {
@@ -111,7 +111,7 @@ function App() {
         dispatch(setOnlineUsers(null));
         console.log('Socket closed');
       }
-    } else if(socket) {
+    } else if (socket) {
       socket.close();
       dispatch(setOnlineUsers(null));
       console.log('Socket closed due to user logout');
