@@ -297,8 +297,7 @@ export const addComment = async (req, res) => {
         userId: commenterId,
         userDetails: user,
         postId,
-        text,
-        message: `${user.username} commented on your post`,
+        message: `${text}`,
       };
       const postOwnerSocketId = getRecieverSocketId(postOwnerId);
       io.to(postOwnerSocketId).emit("notification", notification);

@@ -12,7 +12,7 @@ export default function Notifications() {
           liveNotification.length === 0 ? (
             <p>No new notification</p>
           ) : (
-            liveNotification.map((notification) => {
+            liveNotification?.map((notification) => {
               return (
                 <div key={notification.userId} className='flex gap-2 rounded-lg p-2 bg-slate-100 items-center my-1'>
                   <Avatar>
@@ -22,16 +22,16 @@ export default function Notifications() {
                   <p className='text-sm'>
                     <span className='font-bold mr-1'>{notification.userDetails?.username}</span>
                     {
-                      notification.type === "like" && <span className='font-semibold text-sm'>liked your post</span>
+                      notification?.type === "like" && <span className='font-semibold text-sm'>liked your post</span>
                     }
                     {
-                      notification.type === "dislike" && <span className='font-semibold text-sm'>disliked your post</span>
+                      notification?.type === "dislike" && <span className='font-semibold text-sm'>disliked your post</span>
                     }
                     {
-                      notification.type === "comment" && <p>
+                      notification?.type === "comment" && <p>
                         <span className='font-semibold text-sm' >commented on your post</span>
                         <br />
-                        <span className='text-gray-300'>{notification?.text}</span>
+                        <span className='text-gray-300'>{notification?.message}</span>
                       </p>
                     }
                   </p>
