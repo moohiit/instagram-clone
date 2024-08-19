@@ -72,6 +72,9 @@ function LeftSidebar({ collapsed, setCollapsed }) {
 
   // Sidebar handler
   const sidebarHandler = (textType) => {
+    if (window.innerWidth < 768) {
+      setCollapsed(true);
+    }
     if (textType === "Home") {
       navigate('/');
     } else if (textType === "Search") {
