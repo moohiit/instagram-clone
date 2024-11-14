@@ -57,7 +57,7 @@ const Login = () => {
   }
   return (
     <div className='flex items-center w-screen h-screen justify-center'>
-      <form autoComplete='off' onSubmit={loginHandler} className='flex flex-col shadow-lg gap-5 p-8 '>
+      <form autoComplete='off' onSubmit={loginHandler} className='flex flex-col shadow-lg gap-5 p-8 rounded'>
         <div className='mt-4'>
           <h1 className='font-bold text-3xl my-8 pl-5 text-red-500 flex items-center justify-center gap-2'>
             <Camera color="red" size={48} />

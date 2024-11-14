@@ -9,7 +9,7 @@ import { Post } from "../models/post.model.js";
 export const register = async (req, res) => {
   try {
     //Get the data from the request body
-    console.log(req.body);
+    // console.log(req.body);
     const { username, email, password } = req.body;
     //Validate the data
     //Check if all fields are present
@@ -19,14 +19,7 @@ export const register = async (req, res) => {
         success: false,
       });
     }
-    //Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(401).json({
-        message: "User already exists! Try with other email",
-        success: false,
-      });
-    }
+
     //check if username already used
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
@@ -73,8 +66,8 @@ export const login = async (req, res) => {
     //Check if the user is exists
     let user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({
-        message: "Incorrect Email or Password",
+      return res.status(404).json({
+        message: "User not found",
         success: false,
       });
     }
@@ -127,6 +120,10 @@ export const login = async (req, res) => {
       });
   } catch (error) {
     console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
